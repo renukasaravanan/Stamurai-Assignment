@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>City Data</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="container">
+      <input type="text" id="searchInput" placeholder="Search..." />
+      <table id="cityTable">
+        <thead>
+          <tr>
+            <th>
+              City Name
+              <span onclick="toggleDropdown(event, 0)"
+                >&nbsp;&nbsp;Sort By
+                <div class="dropdown">
+                  <div class="dropdown-content">
+                    <a href="#" onclick="sortTable(0, 'asc')">A-Z</a>
+                    <a href="#" onclick="sortTable(0, 'desc')">Z-A</a>
+                  </div>
+                </div>
+              </span>
+            </th>
+            <th>
+              Country
+              <span onclick="toggleDropdown(event, 1)">
+                &nbsp;&nbsp;Sort By
+                <div class="dropdown">
+                  <div class="dropdown-content">
+                    <a href="#" onclick="sortTable(1, 'asc')">A-Z</a>
+                    <a href="#" onclick="sortTable(1, 'desc')">Z-A</a>
+                  </div>
+                </div>
+              </span>
+            </th>
+            <th>
+              Timezone
+              <span onclick="toggleDropdown(event, 2)"
+                >&nbsp;&nbsp;Sort By
+                <div class="dropdown">
+                  <div class="dropdown-content">
+                    <a href="#" onclick="sortTable(2, 'asc')">A-Z</a>
+                    <a href="#" onclick="sortTable(2, 'desc')">Z-A</a>
+                  </div>
+                </div>
+              </span>
+            </th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </body>
+  <script src="index.js"></script>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather Forecast</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="navbar">
+      <ul>
+        <li><a href="#" onclick="displayMapElement()">View Location</a></li>
+        <li>
+          <a href="#" onclick="displayWeatherForecast()">Weather Forecast</a>
+        </li>
+      </ul>
+    </div>
+    <div id="weatherInfo"></div>
+
+    <div class="container">
+      <div id="map"></div>
+    </div>
+    <script defer src="weather.js"></script>
+    <script
+      defer
+      src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"
+    ></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css"
+    />
+  </body>
+</html>
