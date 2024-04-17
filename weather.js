@@ -13,6 +13,22 @@ let locationdata = {
 };
 let map = null; // Store map reference globally
 
+function updateBackgroundImage(temp) {
+  const body = document.querySelector("body");
+  if (temp > 30) {
+    body.style.backgroundImage = "url('hot.jpg')";
+  } else if (temp > 20 && temp <= 30) {
+    body.style.backgroundImage = "url('sunny.jpg')";
+  } else if (temp < 20 && temp >= 10) {
+    body.style.backgroundImage = "url('rainy.jpg')";
+  } else if (temp < 10) {
+    body.style.backgroundImage = "url('cold.png')";
+  } else {
+    // Default background image or no change
+    body.style.backgroundImage = ""; // Clears the background image
+  }
+}
+
 // Fetch weather data
 fetch(
   `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${apiKey}&units=metric`
@@ -31,6 +47,10 @@ fetch(
     `;
     locationdata.latitude = data.coord.lat;
     locationdata.longitude = data.coord.lon;
+
+    // Changes background image based on temperature
+    updateBackgroundImage(data.main.temp);
+    
     // Fetch forecast data
     return fetch(
       `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${apiKey}&units=metric`
