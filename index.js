@@ -1,5 +1,5 @@
 let currentPage = 1;
-const pageSize = 10; // Number of cities to fetch per page
+const pageSize = 20; // Number of cities to fetch per page
 let cityData = []; // To store all city data
 
 function fetchCities() {
@@ -55,6 +55,42 @@ function sortTable(columnIndex, sortOrder) {
   displayCities(cityData);
 }
 
+// Filter city by name
+function filterCity() {
+  const searchText = document
+    .getElementById("cityFilterInput")
+    .value.trim()
+    .toLowerCase();
+  const filteredCities = cityData.filter((city) =>
+    city.fields.name.toLowerCase().includes(searchText)
+  );
+  displayCities(filteredCities);
+}
+
+// Filter city by country
+function filterCountry() {
+  const searchText = document
+    .getElementById("countryFilterInput")
+    .value.trim()
+    .toLowerCase();
+  const filteredCities = cityData.filter((city) =>
+    city.fields.cou_name_en.toLowerCase().includes(searchText)
+  );
+  displayCities(filteredCities);
+}
+
+// Filter city by timezone
+function filterTimezone() {
+  const searchText = document
+    .getElementById("timezoneFilterInput")
+    .value.trim()
+    .toLowerCase();
+  const filteredCities = cityData.filter((city) =>
+    city.fields.timezone.toLowerCase().includes(searchText)
+  );
+  displayCities(filteredCities);
+}
+
 // Redirect to weather page for the selected city
 function redirectToWeatherPage(cityName) {
   window.location.href = `weather.html?city=${encodeURIComponent(cityName)}`;
@@ -73,7 +109,7 @@ window.addEventListener("scroll", () => {
   }
 });
 
-// Autocomplete functionality without jQuery
+// Autocomplete functionality
 const searchInput = document.getElementById("searchInput");
 searchInput.addEventListener("input", function () {
   const searchTerm = this.value.toUpperCase();
@@ -82,6 +118,38 @@ searchInput.addEventListener("input", function () {
   );
   updateCityOptions(filteredCities);
 });
+
+// This gives the city details searched in top of the table.
+
+document
+  .getElementById("searchInput")
+  .addEventListener("keyup", function (event) {
+    if (event.key === "Enter") {
+      const searchText = event.target.value.trim().toLowerCase();
+      const tableBody = document.querySelector("#cityTable tbody");
+      const rows = tableBody.querySelectorAll("tr");
+
+      // Hide all rows initially
+      rows.forEach((row) => {
+        row.style.display = "none";
+      });
+
+      // Find the matching city and display its details
+      const matchingCity = cityData.find(
+        (city) => city.fields.name.trim().toLowerCase() === searchText
+      );
+      if (matchingCity) {
+        tableBody.innerHTML = ""; // Clear existing rows
+        const row = document.createElement("tr");
+        row.innerHTML = `
+        <td><a href="#" onclick="redirectToWeatherPage('${matchingCity.fields.name}')">${matchingCity.fields.name}</a></td>
+        <td>${matchingCity.fields.cou_name_en}</td>
+        <td>${matchingCity.fields.timezone}</td>
+      `;
+        tableBody.appendChild(row);
+      }
+    }
+  });
 
 function updateCityOptions(filteredCities) {
   const datalist = document.createElement("datalist");
