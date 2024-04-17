@@ -1,4 +1,4 @@
-const apiKey = "8f8b19ffebcef286681beb96f4111925"; // Replace with your OpenWeatherMap API key
+const apiKey = "8f8b19ffebcef286681beb96f4111925"; 
 
 // Get city name from URL parameter
 const queryString = window.location.search;
@@ -54,7 +54,7 @@ function displayWeatherForecast() {
         forecast = data.list;
 
         const table = document.createElement("table");
-        table.id = "weatherTable"; // Assign an ID to the table
+        table.id = "weatherTable"; // Assigned an ID to the table
         table.innerHTML = `
           <thead>
             <tr>
