@@ -5,16 +5,13 @@ const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const cityName = urlParams.get("city");
 let forecast = [];
-let isForcasteClicked = false;
-const weatherInfoParent = document.createElement("div");
+let isWeatherDisplayed = false;
+let isMapDisplayed = false;
 let locationdata = {
   latitude: 1,
   longitude: 2,
 };
-
-// function redirectToMappage(cityName) {
-//window.location.href = `map.html?city=${encodeURIComponent(cityName)}`;
-//}
+let map = null; // Store map reference globally
 
 // Fetch weather data
 fetch(
@@ -25,15 +22,13 @@ fetch(
     const weatherInfo = document.getElementById("weatherInfo");
 
     weatherInfo.innerHTML = `
-                <h2>${data.name}, ${data.sys.country}</h2>
-                <p>Temperature: ${data.main.temp}°C</p>
-                <p>Weather: ${data.weather[0].description}</p>
-                <p>Humidity: ${data.main.humidity}%</p>
-                <p>Wind Speed: ${data.wind.speed} m/s</p>
-                <p>Atmospheric Pressure: ${data.main.pressure} hPa</p>
-             
-            `;
-    weatherInfo.appendChild(weatherInfoParent);
+        <h2>${data.name}, ${data.sys.country}</h2>
+        <p>Temperature: ${data.main.temp}°C</p>
+        <p>Weather: ${data.weather[0].description}</p>
+        <p>Humidity: ${data.main.humidity}%</p>
+        <p>Wind Speed: ${data.wind.speed} m/s</p>
+        <p>Atmospheric Pressure: ${data.main.pressure} hPa</p>
+    `;
     locationdata.latitude = data.coord.lat;
     locationdata.longitude = data.coord.lon;
     // Fetch forecast data
@@ -48,57 +43,88 @@ fetch(
   .catch((error) => console.error("Error fetching weather data:", error));
 
 function displayWeatherForecast() {
-  const table = document.createElement("table");
-  // Create a table for forecast data
-  if (!isForcasteClicked) {
-    table.innerHTML = `
-            <thead>WEATHER FORCASTING</THEAD>   
-            <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Temperature (°C)</th>
-                        <th>Weather</th>
-                        <th>Humidity (%)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${forecast
-                      .map((entry) => {
-                        const dateTime = entry.dt_txt.split(" ");
-                        const date = dateTime[0];
-                        const time = dateTime[1];
-                        return `
-                            <tr>
-                                <td>${date}</td>
-                                <td>${time}</td>
-                                <td>${entry.main.temp}</td>
-                                <td>${entry.weather[0].description}</td>
-                                <td>${entry.main.humidity}</td>
-                            </tr>
-                        `;
-                      })
-                      .join("")}
-                </tbody>
-            `;
-    weatherInfoParent.appendChild(table);
-    isForcasteClicked = true;
+  const weatherTable = document.getElementById("weatherTable");
+
+  if (!isWeatherDisplayed) {
+    fetch(
+      `https://api.openweathermap.org/data/2.5/forecast?q=${cityName}&appid=${apiKey}&units=metric`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        forecast = data.list;
+
+        const table = document.createElement("table");
+        table.id = "weatherTable"; // Assign an ID to the table
+        table.innerHTML = `
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Temperature (°C)</th>
+              <th>Weather</th>
+              <th>Humidity (%)</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${forecast
+              .map((entry) => {
+                const dateTime = entry.dt_txt.split(" ");
+                const date = dateTime[0];
+                const time = dateTime[1];
+                return `
+                  <tr>
+                    <td>${date}</td>
+                    <td>${time}</td>
+                    <td>${entry.main.temp}</td>
+                    <td>${entry.weather[0].description}</td>
+                    <td>${entry.main.humidity}</td>
+                  </tr>
+                `;
+              })
+              .join("")}
+          </tbody>
+        `;
+        weatherInfo.appendChild(table); // Append the new table to the weather container
+        isWeatherDisplayed = true;
+      })
+      .catch((error) =>
+        console.error("Error fetching weather forecast data:", error)
+      );
   } else {
-    weatherInfoParent.remove(table);
-    isForcasteClicked = false;
+    // Remove the weather forecast table only
+    if (weatherTable) {
+      weatherTable.remove();
+    }
+    isWeatherDisplayed = false;
   }
 }
 
 function displayMapElement() {
-  displayMap(locationdata.latitude, locationdata.longitude);
-}
-function displayMap(latitude, longitude) {
-  const map = L.map("map").setView([latitude, longitude], 10);
+  const mapContainer = document.getElementById("map");
 
-  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  }).addTo(map);
+  if (!isMapDisplayed) {
+    if (!map) {
+      // Create map if not already created
+      map = L.map("map").setView(
+        [locationdata.latitude, locationdata.longitude],
+        10
+      );
 
-  L.marker([latitude, longitude]).addTo(map).bindPopup("Location").openPopup();
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(map);
+
+      L.marker([locationdata.latitude, locationdata.longitude])
+        .addTo(map)
+        .bindPopup("Location")
+        .openPopup();
+    }
+
+    mapContainer.style.display = "block";
+    isMapDisplayed = true;
+  } else {
+    mapContainer.style.display = "none";
+    isMapDisplayed = false;
+  }
 }
