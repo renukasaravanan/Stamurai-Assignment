@@ -8,12 +8,19 @@
   </head>
   <body>
     <div class="container">
-      <input type="text" id="searchInput" placeholder="Search..." />
+      <div class="center">
+        <p id="weather">
+          Weather <br />
+          &nbsp; &nbsp; &nbsp;&nbsp;Wizard
+        </p>
+        <input type="text" id="searchInput" placeholder="Search..." />
+      </div>
       <table id="cityTable">
         <thead>
           <tr>
             <th>
               City Name
+
               <span onclick="toggleDropdown(event, 0)"
                 >&nbsp;&nbsp;Sort By
                 <div class="dropdown">
@@ -23,6 +30,12 @@
                   </div>
                 </div>
               </span>
+              <input
+                type="text"
+                id="cityFilterInput"
+                onkeyup="filterCity()"
+                placeholder="Filter by City"
+              />
             </th>
             <th>
               Country
@@ -35,6 +48,12 @@
                   </div>
                 </div>
               </span>
+              <input
+                type="text"
+                id="countryFilterInput"
+                onkeyup="filterCountry()"
+                placeholder="Filter by Country"
+              />
             </th>
             <th>
               Timezone
@@ -47,12 +66,18 @@
                   </div>
                 </div>
               </span>
+              <input
+                type="text"
+                id="timezoneFilterInput"
+                onkeyup="filterTimezone()"
+                placeholder="Filter by Timezone"
+              />
             </th>
           </tr>
         </thead>
         <tbody></tbody>
       </table>
     </div>
+    <script src="index.js"></script>
   </body>
-  <script src="index.js"></script>
 </html>
